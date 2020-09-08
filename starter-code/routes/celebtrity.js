@@ -14,7 +14,37 @@ router.get('/celebrities', (req, res, next) => {
             next(error);
         })
 });
+router.post('/celebrities', (req, res, next) => {
+    const {
+        name,
+        occupation,
+        catchPhrase
+    } = req.body;
+    console.log(req.body);
+    Celebrity.create({
+            name,
+            occupation,
+            catchPhrase
+        }).then(Celebrity => {
+            res.redirect('/celebrities');
+        }).catch(error => {
+            console.log(error);
+          });
 
+        });
+    
+
+
+router.get('/celebrities/add', (req, res, next) => {
+    Celebrity.find()
+        .then(celebrityFromDB => {
+            res.render('celebrityForm', {
+                celebrity: celebrityFromDB
+            });
+        }).catch(error => {
+            next(error);
+        })
+});
 
 router.get('/celebrities/:id', (req, res, next) => {
     const id = req.params.id;
@@ -31,16 +61,18 @@ router.get('/celebrities/:id', (req, res, next) => {
 });
 
 
-router.post('/celebrities/delete/:celebrityId', (req, res) => {
+router.post('/celebrities/:id/delete', (req, res, next) => {
     const id = req.params.id;
     Celebrity.findByIdAndDelete(id)
-      .then(() => {
-        res.redirect('/celebrities');
-      })
-      .catch(error => {
-        next(error);
-      })
-  });
+        .then(() => {
+            res.redirect('/celebrities');
+        })
+        .catch(error => {
+            next(error);
+        })
+});
+
+
 
 
 
